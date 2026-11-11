@@ -1,6 +1,7 @@
 package com.itm.gestorfacturas.modules.pedido;
 
 import com.itm.gestorfacturas.modules.enums.EstadoPedido;
+import com.itm.gestorfacturas.modules.tipocafe.TipoCafe;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
