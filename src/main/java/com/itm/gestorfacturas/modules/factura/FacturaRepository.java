@@ -12,11 +12,8 @@ import java.util.UUID;
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura, UUID> {
 
-    @Query("SELECT f FROM Factura f WHERE LOWER(f.proveedor) LIKE LOWER(CONCAT('%', :parametro, '%')) " +
-            "OR LOWER(CAST(f.estadoFactura AS string)) LIKE LOWER(CONCAT('%', :parametro, '%')) " +
-            "OR LOWER(f.nombreEmpleado) LIKE LOWER(CONCAT('%', :parametro, '%')) " +
-            "OR LOWER(f.pedido.nombreCliente) LIKE LOWER(CONCAT('%', :parametro, '%'))")
-    List<Factura> consultarFacturaParametro(@Param("parametro") String parametro);
-
     List<Factura> findByEstadoFactura(EstadoFactura estadoFactura);
+
+    List<Factura> findByNombreEmpleadoContainingIgnoreCase(String nombreEmpleado);
+
 }
