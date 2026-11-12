@@ -2,6 +2,7 @@ package com.itm.gestorfacturas.modules.pedido;
 
 import com.itm.gestorfacturas.modules.enums.EstadoPedido;
 import com.itm.gestorfacturas.modules.tipocafe.TipoCafe;
+import com.itm.gestorfacturas.modules.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -42,6 +43,10 @@ public class Pedido {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_cafe", referencedColumnName = "id_tipo_cafe", nullable = false)
     private TipoCafe tipoCafe;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "peso_kg", nullable = false)
     private double pesokg;

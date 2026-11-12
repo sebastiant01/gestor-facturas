@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -13,11 +14,13 @@ import java.time.LocalDate;
 @Builder
 public class FacturaResponseDTO {
 
+    private UUID idFactura;
     private LocalDate fecha;
     private String proveedor;
     private String estadoFactura;
     private String nombreEmpleado;
 
+    private UUID idPedido;
     private String nombreCliente;
     private String direccionEntrega;
     private String pais;
