@@ -7,15 +7,11 @@ import java.util.UUID;
 
 public interface IPedidoService {
 
-    void guardarPedido(Pedido pedido);
+    void guardarPedido(PedidoRequestDTO pedido);
 
     Pedido consultarPedidoId(UUID idPedido);
 
-    void actualizarPedidoPendiente(UUID idPedido);
-
-    void cambiarEstadoPedido(UUID idPedido, EstadoPedido estado);
-
-    void eliminarPedidoPendiente(UUID idPedido);
+    void cambiarEstadoPedido(UUID idPedido);
 
     List<Pedido> listarPedidos();
 

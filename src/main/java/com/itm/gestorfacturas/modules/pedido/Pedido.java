@@ -25,6 +25,7 @@ import java.util.UUID;
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     @Column(name = "id_pedido", updatable = false, nullable = false)
     private UUID idPedido;
 

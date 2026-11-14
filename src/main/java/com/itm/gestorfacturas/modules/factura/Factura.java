@@ -25,6 +25,7 @@ public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     @Column(name = "id_factura", updatable = false, nullable = false)
     private UUID idFactura;
 

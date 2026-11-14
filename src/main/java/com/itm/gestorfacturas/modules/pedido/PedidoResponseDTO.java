@@ -20,6 +20,7 @@ public class PedidoResponseDTO {
     private String telefonoCliente;
     private String direccionEntrega;
     private String pais;
+    private UUID idTipoCafe;
     private String nombreTipoCafe;
     private Double pesokg;
     private EstadoPedido estadoPedido;
