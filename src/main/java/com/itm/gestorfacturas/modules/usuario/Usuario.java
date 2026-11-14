@@ -23,6 +23,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     @Column(name = "id_usuario", nullable = false, updatable = false)
     private UUID idUsuario;
 

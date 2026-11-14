@@ -20,6 +20,7 @@ public class TipoCafe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     @Column(name = "id_tipo_cafe", updatable = false, nullable = false)
     private UUID idTipoCafe;
 
