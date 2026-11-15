@@ -3,6 +3,7 @@ package com.itm.gestorfacturas.modules.pedido;
 import com.itm.gestorfacturas.modules.enums.EstadoPedido;
 import com.itm.gestorfacturas.modules.tipocafe.TipoCafe;
 import com.itm.gestorfacturas.modules.tipocafe.TipoCafeRepository;
+import com.itm.gestorfacturas.shared.exception.RecursoNoEncontrado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,9 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void guardarPedido(PedidoRequestDTO pedidoRequest) {
-        TipoCafe tipoCafe = tipoCafeRepository.findById(pedidoRequest.getIdTipoCafe());
+        TipoCafe tipoCafe = tipoCafeRepository.findById(pedidoRequest.getIdTipoCafe())
+                .orElseThrow(() -> new RecursoNoEncontrado("Tipo de café no encontrado con ID: "
+                        + pedidoRequest.getIdTipoCafe()));
 
         Pedido pedido = Pedido.builder()
                 .nombreCliente(pedidoRequest.getNombreCliente())
@@ -38,13 +41,17 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional(readOnly = true)
     public Pedido consultarPedidoId(UUID idPedido) {
-        return this.pedidoRepository.findById(idPedido);
+        return this.pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RecursoNoEncontrado("Pedido no encontrado con ID: "
+                        + idPedido));
     }
 
     @Override
     @Transactional
     public void cambiarEstadoPedido(UUID idPedido) {
-        Pedido pedido = this.pedidoRepository.findById(idPedido);
+        Pedido pedido = this.pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RecursoNoEncontrado("Pedido no encontrado con ID: "
+                        + idPedido));
 
         if (pedido.getEstadoPedido() == EstadoPedido.PENDIENTE) {
             pedido.setEstadoPedido(EstadoPedido.FACTURADO);
