@@ -14,8 +14,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class TipoCafe {
 
     @Id
@@ -38,4 +36,8 @@ public class TipoCafe {
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
 
+    public TipoCafe(String nombreTipoCafe, String descripcionTipoCafe) {
+        this.nombreTipoCafe = nombreTipoCafe;
+        this.descripcionTipoCafe = descripcionTipoCafe;
+    }
 }
