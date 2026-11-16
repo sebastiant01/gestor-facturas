@@ -1,5 +1,6 @@
 package com.itm.gestorfacturas.modules.tipocafe;
 
+import com.itm.gestorfacturas.modules.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +28,10 @@ public class TipoCafe {
 
     @Column(name = "descripcion_tipo_cafe")
     private String descripcionTipoCafe;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @CreatedDate
     @Column(name = "fecha_creacion", nullable = false, updatable = false)

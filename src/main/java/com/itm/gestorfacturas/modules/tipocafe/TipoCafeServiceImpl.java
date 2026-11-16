@@ -32,6 +32,7 @@ public class TipoCafeServiceImpl implements ITipoCafeService {
     }
 
     @Override
+    @Transactional
     public void actualizarTipoCafe(UUID idTipoCafe, TipoCafeRequestDTO tipoCafeRequest) {
         TipoCafe tipoCafe = this.tipoCafeRepository.findById(idTipoCafe)
                 .orElseThrow(() -> new RecursoNoEncontrado(
