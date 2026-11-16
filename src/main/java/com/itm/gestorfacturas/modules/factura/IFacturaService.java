@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface IFacturaService {
 
-    void guardarFactura(Factura factura);
+    void guardarFactura(FacturaRequestDTO facturaRequest);
 
     Factura consultarFacturaId(UUID idFactura);
 
