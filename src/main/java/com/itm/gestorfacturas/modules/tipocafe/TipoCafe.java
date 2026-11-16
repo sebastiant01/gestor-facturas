@@ -1,5 +1,6 @@
 package com.itm.gestorfacturas.modules.tipocafe;
 
+import com.itm.gestorfacturas.modules.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,8 +15,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class TipoCafe {
 
     @Id
@@ -30,6 +29,10 @@ public class TipoCafe {
     @Column(name = "descripcion_tipo_cafe")
     private String descripcionTipoCafe;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
+    private Usuario usuario;
+
     @CreatedDate
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
@@ -38,4 +41,8 @@ public class TipoCafe {
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
 
+    public TipoCafe(String nombreTipoCafe, String descripcionTipoCafe) {
+        this.nombreTipoCafe = nombreTipoCafe;
+        this.descripcionTipoCafe = descripcionTipoCafe;
+    }
 }
