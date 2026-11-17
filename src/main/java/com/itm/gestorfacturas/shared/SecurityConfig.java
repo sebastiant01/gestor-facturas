@@ -119,7 +119,7 @@ public class SecurityConfig {
                 }
             }
             // Si ya cambió su clave temporal, entra al flujo normal del sistema
-            response.sendRedirect("/pedidos");
+            response.sendRedirect("/inicio");
         };
     }
 
