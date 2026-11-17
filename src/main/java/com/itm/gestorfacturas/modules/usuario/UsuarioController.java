@@ -26,6 +26,13 @@ public class UsuarioController {
         return RolUsuario.values();
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public String listarUsuarios(Model model) {
+        model.addAttribute("usuarios", usuarioService.listarUsuariosActivos());
+        return "usuario/lista";
+    }
+
     @GetMapping("/nuevo")
     @PreAuthorize("hasRole('ADMIN')")
     public String mostrarFormulario(Model model){
@@ -93,7 +100,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}/editar")
-    @PreAuthorize("hasrole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public String actualizarUsuario(@PathVariable UUID id,
                                     @ModelAttribute("usuario") Usuario usuarioActualizado,
                                     RedirectAttributes redirectAttributes) {
@@ -111,7 +118,7 @@ public class UsuarioController {
     public String eliminarUsuario(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
         usuarioService.eliminarUsuario(id);
         redirectAttributes.addFlashAttribute("mensajeExito", "Usuario desactivado del sistema y de Auth0 >n<");
-        return "redirect:/usuarios/nuevo";
+        return "redirect:/usuarios";
     }
 
 }
