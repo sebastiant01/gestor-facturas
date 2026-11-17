@@ -19,7 +19,7 @@ public class TipoCafeController {
     private final ITipoCafeService tipoCafeService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
     public String listarTiposCafe(Model model) {
         model.addAttribute("tiposCafe", tipoCafeService.listarTiposCafe());
         return "tipocafe/lista";

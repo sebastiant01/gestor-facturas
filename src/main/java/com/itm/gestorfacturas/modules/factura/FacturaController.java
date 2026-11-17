@@ -5,6 +5,7 @@ import com.itm.gestorfacturas.modules.pedido.IPedidoService;
 import com.itm.gestorfacturas.modules.pedido.Pedido;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ public class FacturaController {
     private final IPedidoService pedidoService;
 
     @GetMapping("/nueva/{idPedido}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String guardarFacturaFormulario(@PathVariable UUID idPedido, Model model) {
         Pedido pedido = this.pedidoService.consultarPedidoId(idPedido);
 
@@ -40,6 +42,7 @@ public class FacturaController {
     }
 
     @PostMapping("/guardar")
+    @PreAuthorize("hasRole('ADMIN')")
     public String guardarFactura(
             @Valid @ModelAttribute("facturaRequestDTO") FacturaRequestDTO requestDTO,
             BindingResult bindingResult,
@@ -64,6 +67,7 @@ public class FacturaController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
     public String listarFacturas(
             @RequestParam(value = "empleado", required = false) String empleado,
             @RequestParam(value = "estado", required = false) EstadoFactura estado,
@@ -88,6 +92,7 @@ public class FacturaController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
     public String verDetalleFactura(@PathVariable("id") UUID idFactura, Model model) {
         Factura factura = this.facturaService.consultarFacturaId(idFactura);
         model.addAttribute("factura", factura);

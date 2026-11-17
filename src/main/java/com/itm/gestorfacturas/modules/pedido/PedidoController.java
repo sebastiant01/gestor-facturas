@@ -45,6 +45,7 @@ public class PedidoController {
         .../pedidos?estado=PENDIENTE
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
     public String listarPedidos(@RequestParam(required = false) EstadoPedido estado,
                                 Model model) {
         if (estado != null) {
@@ -57,6 +58,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLEADO')")
     public String detallePedido(@PathVariable UUID id, Model model) {
         model.addAttribute("pedido", pedidoService.consultarPedidoId(id));
         return "pedido/detalle";
