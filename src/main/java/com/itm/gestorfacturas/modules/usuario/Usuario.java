@@ -1,8 +1,8 @@
 package com.itm.gestorfacturas.modules.usuario;
 
+import com.itm.gestorfacturas.modules.enums.RolUsuario;
 import jakarta.persistence.*;
 import lombok.*;
-import com.itm.gestorfacturas.modules.enums.RolUsuario;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,10 +15,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "usuarios")
 @EntityListeners(AuditingEntityListener.class)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Usuario {
 
     @Id
@@ -27,32 +28,40 @@ public class Usuario {
     @Column(name = "id_usuario", nullable = false, updatable = false)
     private UUID idUsuario;
 
-    @Column(name = "nombre_usuario", nullable = false)
+    @Column(name = "auth0_id", nullable = false, unique = true, updatable = false)
+    private String auth0Id;
+
+    @Column(name = "nombre_usuario", nullable = false, length = 100)
     private String nombreUsuario;
 
-    @Column(nullable = false, unique = true)
+    @Column(name ="correo", nullable = false, unique = true, length = 100)
     private String correo;
 
-    @Column(name = "contrasena_hash", nullable = false)
-    private String contrasenaHash;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "rol", nullable = false)
+    @Builder.Default
     private RolUsuario rol = RolUsuario.EMPLEADO;
 
     @Column(name = "contrasena_es_temporal", nullable = false)
     @Builder.Default
     private boolean contrasenaEsTemporal = true;
 
+    @Column(name = "activo", nullable = false)
+    @Builder.Default
+    private boolean activo = true;
+
     @CreatedDate
+    @Setter(AccessLevel.NONE)
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
     @LastModifiedDate
+    @Setter(AccessLevel.NONE)
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
 
     @CreatedBy
+    @Setter(AccessLevel.NONE)
     @Column(name = "creado_por", updatable = false)
     private String creadoPor;
 
