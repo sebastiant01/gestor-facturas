@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -18,7 +19,24 @@ public class UsuarioResponseDTO {
     private String nombreUsuario;
     private String correo;
     private RolUsuario rol;
+    private boolean contrasenaEsTemporal;
+    private boolean activo;
+    private LocalDateTime fechaCreacion;
+    private String creadoPor;
 
-    private String contrasenaTemporal;
-
+    public static UsuarioResponseDTO fromEntity(Usuario usuario) {
+        if (usuario == null) {
+            return null;
+        }
+        return UsuarioResponseDTO.builder()
+                .idUsuario(usuario.getIdUsuario())
+                .nombreUsuario(usuario.getNombreUsuario())
+                .correo(usuario.getCorreo())
+                .rol(usuario.getRol())
+                .contrasenaEsTemporal(usuario.isContrasenaEsTemporal())
+                .activo(usuario.isActivo())
+                .fechaCreacion(usuario.getFechaCreacion())
+                .creadoPor(usuario.getCreadoPor())
+                .build();
+    }
 }
