@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambio de Contraseña Obligatorio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+    <h2>Actualiza tu contraseña temporal</h2>
+    <p>Hola <strong th:text="${usuario.nombreUsuario}">Usuario</strong>, por seguridad debes asignar una contraseña definitiva antes de continuar.</p>
+
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <form th:action="@{/usuarios/{id}/cambiar-contrasena(id=${usuario.idUsuario})}" method="post">
+        
+        <label for="nuevaContrasena">Nueva contraseña</label>
+        <input type="password" id="nuevaContrasena" name="nuevaContrasena" required>
+
+        <label for="confirmarContrasena">Confirmar nueva contraseña</label>
+        <input type="password" id="confirmarContrasena" name="confirmarContrasena" required>
+
+        <button type="submit">Guardar Nueva Contraseña</button>
+    </form>
+</main>
+</body>
+</html>

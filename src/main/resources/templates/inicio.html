@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Gestor de Facturas</strong></li>
+        </ul>
+        <ul>
+            <!-- Solo visible si el usuario tiene ROLE_ADMIN en Neon -->
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/usuarios/nuevo}">Nuevo Usuario</a>
+            </li>
+            <li><a th:href="@{/pedidos}">Pedidos</a></li>
+            <li><a th:href="@{/facturas}">Facturas</a></li>
+            <li>
+                <!-- En Spring Security el logout SIEMPRE debe ser un form POST -->
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="secondary outline">Cerrar sesión</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h3>Bienvenido, <span th:text="${nombre}">Usuario</span></h3>
+        <p>Sesión iniciada como: <code th:text="${correo}">correo@dominio.com</code></p>
+        <p>Rol activo: <strong sec:authentication="authorities">ROLE_USER</strong></p>
+    </article>
+</main>
+</body>
+</html>

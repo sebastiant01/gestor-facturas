@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Usuario - Gestor Facturas</title>
+    <!-- PicoCSS: deja cualquier formulario limpio sin escribir una línea de CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+    <h2>Registrar Nuevo Empleado</h2>
+
+    <!-- Alertas de éxito o error de negocio -->
+    <article th:if="${mensajeExito}" style="background-color: #1b4332; color: white;" th:text="${mensajeExito}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <form th:action="@{/usuarios/nuevo}" th:object="${usuarioRequest}" method="post">
+        
+        <label for="nombreUsuario">Nombre completo</label>
+        <input type="text" id="nombreUsuario" th:field="*{nombreUsuario}" placeholder="Ej. Juan Pérez" required>
+        <small style="color: #ef4444;" th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}"></small>
+
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" th:field="*{correo}" placeholder="empleado@empresa.com" required>
+        <small style="color: #ef4444;" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
+
+        <label for="contrasenaTemporal">Contraseña temporal (Auth0)</label>
+        <input type="password" id="contrasenaTemporal" th:field="*{contrasenaTemporal}" placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número" required>
+        <small style="color: #ef4444;" th:if="${#fields.hasErrors('contrasenaTemporal')}" th:errors="*{contrasenaTemporal}"></small>
+
+        <label for="rol">Rol del sistema</label>
+        <select id="rol" th:field="*{rol}">
+            <option th:each="rolOpt : ${rolesDisponibles}" 
+                    th:value="${rolOpt}" 
+                    th:text="${rolOpt}">EMPLEADO</option>
+        </select>
+
+        <button type="submit">Crear Usuario</button>
+    </form>
+</main>
+</body>
+</html>
