@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Usuario - Gestor Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Detalle / Edición de Usuario</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/usuarios}" class="secondary">← Volver a la lista</a></li>
+        </ul>
+    </nav>
+
+    <article th:if="${mensajeExito}" style="background-color: #1b4332; color: white;" th:text="${mensajeExito}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <article>
+        <form th:action="@{/usuarios/{id}/editar(id=${usuario.idUsuario})}" th:object="${usuario}" method="post">
+            
+            <label for="nombreUsuario">Nombre de usuario</label>
+            <input type="text" id="nombreUsuario" th:field="*{nombreUsuario}" required>
+
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" th:field="*{correo}" required>
+
+            <label for="rol">Rol</label>
+            <select id="rol" th:field="*{rol}">
+                <option th:each="rolOpt : ${roles}"
+                        th:value="${rolOpt}"
+                        th:text="${rolOpt}">EMPLEADO</option>
+            </select>
+
+            <p><small>ID Auth0: <code th:text="${usuario.auth0Id}">auth0|123</code></small></p>
+
+            <button type="submit" sec:authorize="hasRole('ADMIN')">Guardar Cambios</button>
+        </form>
+
+        <hr sec:authorize="hasRole('ADMIN')">
+
+        <form sec:authorize="hasRole('ADMIN')"
+              th:action="@{/usuarios/{id}/eliminar(id=${usuario.idUsuario})}" 
+              method="post"
+              onsubmit="return confirm('¿Seguro que deseas desactivar este usuario?');">
+            <button type="submit" class="secondary contrast">Desactivar Usuario</button>
+        </form>
+    </article>
+</main>
+</body>
+</html>
