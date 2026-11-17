@@ -25,12 +25,12 @@
         <small style="color: #ef4444;" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
 
         <label for="contrasenaTemporal">Contraseña temporal (Auth0)</label>
-        <input type="password" id="contrasenaTemporal" th:field="*{contrasenaTemporal}" placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número" required>
+        <input type="password" id="contrasenaTemporal" th:field="*{contrasenaTemporal}" placeholder="Mín. 12 caracteres, 1 mayúscula y 1 número" required>
         <small style="color: #ef4444;" th:if="${#fields.hasErrors('contrasenaTemporal')}" th:errors="*{contrasenaTemporal}"></small>
 
         <label for="rol">Rol del sistema</label>
         <select id="rol" th:field="*{rol}">
-            <option th:each="rolOpt : ${rolesDisponibles}" 
+            <option th:each="rolOpt : ${roles}" 
                     th:value="${rolOpt}" 
                     th:text="${rolOpt}">EMPLEADO</option>
         </select>
