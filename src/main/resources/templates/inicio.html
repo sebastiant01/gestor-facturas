@@ -15,7 +15,7 @@
         <ul>
             <!-- Solo visible si el usuario tiene ROLE_ADMIN en Neon -->
             <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/usuarios/nuevo}">Nuevo Usuario</a>
+                <a th:href="@{/usuarios/nuevo}">Nuevo Usuario :3</a>
             </li>
             <li><a th:href="@{/pedidos}">Pedidos</a></li>
             <li><a th:href="@{/facturas}">Facturas</a></li>
@@ -29,7 +29,7 @@
     </nav>
 
     <article>
-        <h3>Bienvenido, <span th:text="${nombre}">Usuario</span></h3>
+        <h3>Bienvenido OwO!!!, <span th:text="${nombre}">Usuario</span></h3>
         <p>Sesión iniciada como: <code th:text="${correo}">correo@dominio.com</code></p>
         <p>Rol activo: <strong sec:authentication="authorities">ROLE_USER</strong></p>
     </article>
