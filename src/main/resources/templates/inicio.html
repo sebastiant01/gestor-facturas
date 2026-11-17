@@ -14,8 +14,7 @@
         </ul>
         <ul>
             <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/usuarios}" role="button" class="outline">Ver Usuarios OwO</a>
-            </li>
+                <a th:href="@{/usuarios}">Ver Usuarios OwO</a></li>
             <!-- Solo visible si el usuario tiene ROLE_ADMIN en Neon -->
             <li sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/usuarios/nuevo}">Nuevo Usuario :3</a>
