@@ -65,7 +65,7 @@ public class UsuarioController {
     public String mostrarFormularioCambioContrasena(@PathVariable UUID id, Model model) {
         Usuario usuario = usuarioService.consultarUsuarioId(id);
         model.addAttribute("usuario", usuario);
-        return "usuario/cambiar-contraseña";
+        return "usuario/cambiar-contrasena";
     }
 
     @PostMapping("/{id}/cambiar-contrasena")
@@ -84,7 +84,7 @@ public class UsuarioController {
         try {
             usuarioService.cambiarContrasena(id, nuevaContrasena);
             redirectAttributes.addFlashAttribute("mensajeExito", "Contraseña actualizada con éxito OwO!!! Ya puedes usar el sistema");
-            return "redirect:/pedidos";
+            return "redirect:/inicio";
         } catch (IllegalArgumentException erm) {
             model.addAttribute("usuario", usuarioService.consultarUsuarioId(id));
             model.addAttribute("mensajeError", erm.getMessage());
@@ -112,6 +112,63 @@ public class UsuarioController {
         usuarioService.eliminarUsuario(id);
         redirectAttributes.addFlashAttribute("mensajeExito", "Usuario desactivado del sistema y de Auth0 >n<");
         return "redirect:/usuarios/nuevo";
+    }
+
+    // 1. Listar todos los usuarios activos para poder elegir cuál editar
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public String listarUsuarios(Model model) {
+        model.addAttribute("usuarios", usuarioService.listarUsuariosActivos());
+        return "usuario/lista";
+    }
+
+    // 2. Cargar la vista de detalle/edición con los datos actuales del usuario
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String verDetalleEditar(@PathVariable UUID id, Model model) {
+        var usuario = usuarioService.consultarUsuarioId(id);
+        
+        // Pre-llenamos el DTO con los datos actuales para que el formulario salga relleno
+        UsuarioRequestDTO formDto = UsuarioRequestDTO.builder()
+                .nombreUsuario(usuario.getNombreUsuario())
+                .correo(usuario.getCorreo())
+                .rol(usuario.getRol())
+                .build();
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuarioRequest", formDto);
+        return "usuario/detalle";
+    }
+
+    // 3. Guardar los cambios de la edición
+    @PostMapping("/{id}/editar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String actualizarUsuario(
+            @PathVariable UUID id,
+            @ModelAttribute("usuarioRequest") UsuarioRequestDTO dto,
+            RedirectAttributes redirectAttributes) {
+        try {
+            
+            Usuario datosActualizados = new Usuario();
+            datosActualizados.setNombreUsuario(dto.getNombreUsuario());
+            datosActualizados.setCorreo(dto.getCorreo());
+            datosActualizados.setRol(dto.getRol());
+
+            usuarioService.actualizarUsuario(id, datosActualizados);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Usuario actualizado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+        }
+        return "redirect:/usuarios/" + id;
+    }
+
+    // 4. Desactivar usuario (Borrado lógico en Neon + Bloqueo en Auth0)
+    @PostMapping("/{id}/desactivar")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String desactivarUsuario(@PathVariable UUID id, RedirectAttributes redirectAttributes) {
+        usuarioService.eliminarUsuario(id);
+        redirectAttributes.addFlashAttribute("mensajeExito", "Usuario desactivado del sistema.");
+        return "redirect:/usuarios";
     }
 
 }

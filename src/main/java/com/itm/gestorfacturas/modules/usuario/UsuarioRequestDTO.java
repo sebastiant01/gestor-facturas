@@ -26,9 +26,9 @@ public class UsuarioRequestDTO {
     private String correo;
 
     @NotBlank(message = "La contraseña temporal es obligatoria")
-    @Size(min = 12, max = 64, message = "La contraseña temporal debe tener entre 8 y 64 caracteres OnO")
+    @Size(min = 12, max = 64, message = "La contraseña temporal debe tener entre 12 y 64 caracteres OnO")
     @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*S",
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
         message = "La contraseña temporal debe incluir al menos una mayúscula, una minúscula y un número (Requisito de Auth0 UwU)"
     )
     private String contrasenaTemporal;
