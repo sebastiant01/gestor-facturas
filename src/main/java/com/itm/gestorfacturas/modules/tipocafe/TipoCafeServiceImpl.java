@@ -1,11 +1,13 @@
 package com.itm.gestorfacturas.modules.tipocafe;
 
+import com.itm.gestorfacturas.shared.exception.RecursoDuplicado;
 import com.itm.gestorfacturas.shared.exception.RecursoNoEncontrado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,6 +19,13 @@ public class TipoCafeServiceImpl implements ITipoCafeService {
     @Override
     @Transactional
     public void guardarTipoCafe(TipoCafeRequestDTO tipoCafeRequest) {
+
+        Optional<TipoCafe> tipoCafeExistente = this.tipoCafeRepository
+                .findByNombreTipoCafeContainingIgnoreCase(tipoCafeRequest.getNombreTipoCafe());
+        if (tipoCafeExistente.isPresent()) {
+            throw new RecursoDuplicado("Este tipo de café ya existe.");
+        }
+
         TipoCafe tipoCafe = new TipoCafe(tipoCafeRequest.getNombreTipoCafe(),
                 tipoCafeRequest.getDescripcionTipoCafe());
 

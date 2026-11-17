@@ -17,6 +17,27 @@ public class GlobalExceptionHandler {
                 .body(Map.of("mensaje", ex.getMessage()));
     }
 
+    @ExceptionHandler(RecursoDuplicado.class)
+    public ResponseEntity<Map<String, String>> handleRecursoDuplicado(RecursoDuplicado ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(PedidoFacturado.class)
+    public ResponseEntity<Map<String, String>> handlePedidoFacturado(PedidoFacturado ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
+    @ExceptionHandler(DatosInvalidos.class)
+    public ResponseEntity<Map<String, String>> handleDatosInvalidos(DatosInvalidos ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("mensaje", ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleExcepcionesGenerales(Exception ex) {
         return ResponseEntity
