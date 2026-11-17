@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul><li><strong>Gestión de Usuarios</strong></li></ul>
+        <ul>
+            <li><a th:href="@{/inicio}" class="secondary">Volver al Inicio</a></li>
+            <li><a th:href="@{/usuarios/nuevo}" role="button">+ Nuevo Usuario</a></li>
+        </ul>
+    </nav>
+
+    <article th:if="${mensajeExito}" style="background-color: #1b4332; color: white;" th:text="${mensajeExito}"></article>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Clave Temporal</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td th:text="${u.nombreUsuario}">Nombre</td>
+                <td th:text="${u.correo}">correo@itm.edu.co</td>
+                <td><mark th:text="${u.rol}">EMPLEADO</mark></td>
+                <td th:text="${u.contrasenaEsTemporal ? 'Sí (Pendiente)' : 'No (Activa)'}">No</td>
+                <td>
+                    <!-- EL BOTONCITO DE EDITAR -->
+                    <a th:href="@{/usuarios/{id}(id=${u.idUsuario})}" role="button" class="outline">
+                        Editar
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
