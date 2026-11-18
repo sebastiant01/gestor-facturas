@@ -2,6 +2,8 @@ package com.itm.gestorfacturas.modules.usuario;
 
 import com.itm.gestorfacturas.modules.enums.RolUsuario;
 import com.itm.gestorfacturas.shared.IIdentityProviderFacade;
+import com.itm.gestorfacturas.shared.exception.DatosInvalidos;
+import com.itm.gestorfacturas.shared.exception.RecursoDuplicado;
 import com.itm.gestorfacturas.shared.exception.RecursoNoEncontrado;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void guardarUsuario(UsuarioRequestDTO usuarioRequest) {
 
         if (usuarioRepository.existsByCorreo(usuarioRequest.getCorreo())){
-            throw new IllegalArgumentException("Ya existe un usuario registrado con ese correo OnO: " + usuarioRequest.getCorreo());
+            throw new RecursoDuplicado(
+                    "Ya existe un usuario registrado con ese correo OnO: " + usuarioRequest.getCorreo());
         }
 
         String auth0Id = identityProviderFac.registrarUsuarioConClaveTemporal(
@@ -59,7 +62,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
         if (!usuarioExistente.getCorreo().equalsIgnoreCase(usuario.getCorreo())
                 && usuarioRepository.existsByCorreo(usuario.getCorreo())) {
-            throw new IllegalArgumentException("El nuevo correo ya está en uso OnO");
+            throw new RecursoDuplicado("El nuevo correo ya está en uso OnO");
         }
 
         identityProviderFac.actualizarDatosUsuario(
@@ -81,7 +84,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         Usuario usuarioExistente = consultarUsuarioId(idUsuario);
 
         if (nuevaContrasena == null || nuevaContrasena.isBlank() || nuevaContrasena.length() < 12) {
-            throw new IllegalArgumentException("La nueva contraseña debe tener al menos 12 caracteres OnO");
+            throw new DatosInvalidos("La nueva contraseña debe tener al menos 12 caracteres OnO");
         }
 
         identityProviderFac.actualizarContrasena(usuarioExistente.getAuth0Id(), nuevaContrasena);
@@ -109,7 +112,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional(readOnly = true)
     public Usuario consultarPorAuth0Id(String auth0Id){
         return this.usuarioRepository.findByAuth0Id(auth0Id)
-                .orElseThrow(() -> new RecursoNoEncontrado("Usuario no encontrado OnO" + auth0Id));
+                .orElseThrow(() -> new RecursoNoEncontrado("Usuario no encontrado OnO " + auth0Id));
     }
 
     @Override

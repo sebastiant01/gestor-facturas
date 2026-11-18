@@ -5,6 +5,7 @@ import com.itm.gestorfacturas.modules.enums.EstadoPedido;
 import com.itm.gestorfacturas.modules.pedido.IPedidoService;
 import com.itm.gestorfacturas.modules.pedido.PedidoRepository;
 import com.itm.gestorfacturas.modules.pedido.Pedido;
+import com.itm.gestorfacturas.shared.exception.PedidoFacturado;
 import com.itm.gestorfacturas.shared.exception.RecursoNoEncontrado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,7 +31,7 @@ public class FacturaServiceImpl implements IFacturaService {
                         "Pedido no encontrado con id: " + facturaRequest.getIdPedido()));
 
         if (pedido.getEstadoPedido() != EstadoPedido.PENDIENTE) {
-            throw new IllegalStateException(
+            throw new PedidoFacturado(
                     "El pedido ya fue facturado y no puede volver a facturarse.");
         }
 
