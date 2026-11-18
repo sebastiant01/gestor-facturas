@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Pedido - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-pendiente {
+            background-color: #ca8a04;
+            color: #fff;
+        }
+        .badge-facturado {
+            background-color: #16a34a;
+            color: #fff;
+        }
+        .detail-grid p {
+            margin-bottom: 0.6rem;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Detalle del Pedido de Exportación</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/pedidos}" class="secondary">← Volver a Pedidos</a></li>
+            <li><a th:href="@{/facturas}" role="button" class="outline">Ver Facturas</a></li>
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <article th:if="${mensaje}" style="background-color: #14532d; color: white;" th:text="${mensaje}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Información Principal del Pedido (sin mostrar IDs) -->
+    <article>
+        <header class="header-flex">
+            <div>
+                <strong>Información del Cliente y Envío</strong>
+            </div>
+            <div>
+                <span class="badge"
+                      th:classappend="${pedido.estadoPedido.name() == 'PENDIENTE'} ? 'badge-pendiente' : 'badge-facturado'"
+                      th:text="${pedido.estadoPedido}">
+                    PENDIENTE
+                </span>
+            </div>
+        </header>
+
+        <div class="grid detail-grid">
+            <div>
+                <p><strong>Cliente:</strong> <span th:text="${pedido.nombreCliente}">Exportadora Café</span></p>
+                <p><strong>Teléfono de Contacto:</strong> <span th:text="${pedido.telefonoCliente}">+57 300 000 0000</span></p>
+                <p><strong>Fecha del Pedido:</strong> <span th:text="${pedido.fechaPedido}">2026-11-18</span></p>
+            </div>
+            <div>
+                <p><strong>País de Destino:</strong> <span th:text="${pedido.pais}">Estados Unidos</span></p>
+                <p><strong>Dirección / Puerto de Entrega:</strong> <span th:text="${pedido.direccionEntrega}">Port of Miami</span></p>
+                <p><strong>Estado Actual:</strong> <span th:text="${pedido.estadoPedido}">PENDIENTE</span></p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Especificaciones del Café -->
+    <article>
+        <header>
+            <strong>Especificaciones del Producto</strong>
+        </header>
+
+        <div class="grid detail-grid">
+            <div>
+                <p>
+                    <strong>Tipo de Café:</strong>
+                    <span th:text="${pedido.tipoCafe != null ? pedido.tipoCafe.nombreTipoCafe : 'N/A'}">Café Excelso</span>
+                </p>
+            </div>
+            <div>
+                <p>
+                    <strong>Peso Neto:</strong>
+                    <span th:text="${#numbers.formatDecimal(pedido.pesokg, 1, 2) + ' kg'}">250.00 kg</span>
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <div class="grid">
+                <a th:href="@{/pedidos}" role="button" class="secondary outline">Volver al Listado</a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   th:if="${pedido.estadoPedido.name() == 'PENDIENTE'}"
+                   th:href="@{/facturas/nueva/{idPedido}(idPedido=${pedido.idPedido})}"
+                   role="button">
+                    Generar Factura
+                </a>
+
+                <a th:if="${pedido.estadoPedido.name() == 'FACTURADO'}"
+                   th:href="@{/facturas}"
+                   role="button"
+                   class="outline">
+                    Consultar Facturas
+                </a>
+            </div>
+        </footer>
+    </article>
+</main>
+</body>
+</html>
