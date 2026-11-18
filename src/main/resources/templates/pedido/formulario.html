@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Pedido - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: -0.75rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Registrar Nuevo Pedido</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/inicio}" class="secondary">Inicio</a></li>
+            <li><a th:href="@{/pedidos}" role="button" class="outline">Ver Pedidos</a></li>
+        </ul>
+    </nav>
+
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <article>
+        <form th:action="@{/pedidos/nuevo}" th:object="${pedidoRequest}" method="post">
+
+            <div class="grid">
+                <div>
+                    <label for="nombreCliente">Nombre del Cliente</label>
+                    <input type="text" id="nombreCliente" th:field="*{nombreCliente}"
+                           placeholder="Ej: Exportadora Café del Norte" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('nombreCliente')}"
+                           th:errors="*{nombreCliente}"></small>
+                </div>
+
+                <div>
+                    <label for="telefonoCliente">Teléfono de Contacto</label>
+                    <input type="tel" id="telefonoCliente" th:field="*{telefonoCliente}"
+                           placeholder="Ej: +57 300 123 4567" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('telefonoCliente')}"
+                           th:errors="*{telefonoCliente}"></small>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="pais">País de Destino</label>
+                    <input type="text" id="pais" th:field="*{pais}"
+                           placeholder="Ej: Estados Unidos" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('pais')}"
+                           th:errors="*{pais}"></small>
+                </div>
+
+                <div>
+                    <label for="direccionEntrega">Dirección de Entrega / Puerto</label>
+                    <input type="text" id="direccionEntrega" th:field="*{direccionEntrega}"
+                           placeholder="Ej: Port of Miami, Terminal 3" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('direccionEntrega')}"
+                           th:errors="*{direccionEntrega}"></small>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="idTipoCafe">Tipo de Café</label>
+                    <select id="idTipoCafe" th:field="*{idTipoCafe}" required>
+                        <option value="" disabled selected>-- Seleccione un tipo de café --</option>
+                        <option th:each="cafe : ${tiposCafe}"
+                                th:value="${cafe.idTipoCafe}"
+                                th:text="${cafe.nombreTipoCafe}">
+                            Café Excelso
+                        </option>
+                    </select>
+                    <small class="error-msg" th:if="${#fields.hasErrors('idTipoCafe')}"
+                           th:errors="*{idTipoCafe}"></small>
+                </div>
+
+                <div>
+                    <label for="pesokg">Peso (kg)</label>
+                    <input type="number" id="pesokg" th:field="*{pesokg}"
+                           step="0.01" min="0.01" placeholder="Ej: 250.5" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('pesokg')}"
+                           th:errors="*{pesokg}"></small>
+                </div>
+
+                <div>
+                    <label for="fechaPedido">Fecha del Pedido</label>
+                    <input type="date" id="fechaPedido" th:field="*{fechaPedido}">
+                </div>
+            </div>
+
+            <button type="submit">Registrar Pedido</button>
+        </form>
+    </article>
+</main>
+</body>
+</html>

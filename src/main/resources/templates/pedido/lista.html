@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Pedidos - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-pendiente {
+            background-color: #ca8a04;
+            color: #fff;
+        }
+        .badge-facturado {
+            background-color: #16a34a;
+            color: #fff;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .actions-cell form {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Gestión de Pedidos</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/inicio}" class="secondary">Inicio</a></li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/pedidos/nuevo}" role="button">+ Nuevo Pedido</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <article th:if="${mensaje}" style="background-color: #14532d; color: white;" th:text="${mensaje}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Barra de filtros por EstadoPedido -->
+    <div class="filter-bar">
+        <span><strong>Filtrar por estado:</strong></span>
+        <a th:href="@{/pedidos}"
+           role="button"
+           th:classappend="${estadoFiltro == null} ? '' : 'outline secondary'">
+            Todos
+        </a>
+        <a th:href="@{/pedidos(estado='PENDIENTE')}"
+           role="button"
+           th:classappend="${estadoFiltro != null and estadoFiltro.name() == 'PENDIENTE'} ? '' : 'outline'">
+            Pendientes (Sin Facturar)
+        </a>
+        <a th:href="@{/pedidos(estado='FACTURADO')}"
+           role="button"
+           th:classappend="${estadoFiltro != null and estadoFiltro.name() == 'FACTURADO'} ? 'contrast' : 'outline secondary'">
+            Facturados
+        </a>
+    </div>
+
+    <!-- Tabla de Pedidos -->
+    <figure>
+        <table>
+            <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>País / Destino</th>
+                <th>Tipo de Café</th>
+                <th>Peso (kg)</th>
+                <th>Fecha Pedido</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(pedidos)}">
+                <td colspan="7" style="text-align: center;">No hay pedidos registrados para este filtro.</td>
+            </tr>
+            <tr th:each="p : ${pedidos}">
+                <td>
+                    <strong th:text="${p.nombreCliente}">Cliente</strong><br>
+                    <small th:text="${p.telefonoCliente}">+57 300...</small>
+                </td>
+                <td>
+                    <span th:text="${p.pais}">Colombia</span><br>
+                    <small th:text="${p.direccionEntrega}">Dirección</small>
+                </td>
+                <td th:text="${p.tipoCafe != null ? p.tipoCafe.nombreTipoCafe : 'N/A'}">Café Excelso</td>
+                <td th:text="${#numbers.formatDecimal(p.pesokg, 1, 2) + ' kg'}">100.00 kg</td>
+                <td th:text="${p.fechaPedido}">2026-11-18</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${p.estadoPedido.name() == 'PENDIENTE'} ? 'badge-pendiente' : 'badge-facturado'"
+                          th:text="${p.estadoPedido}">
+                        PENDIENTE
+                    </span>
+                </td>
+                <td>
+                    <div class="actions-cell">
+                        <!-- Ver detalle -->
+                        <a th:href="@{/pedidos/{id}(id=${p.idPedido})}"
+                           role="button" class="outline secondary"
+                           style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">
+                            Detalle
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+</main>
+</body>
+</html>

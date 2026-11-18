@@ -1,6 +1,8 @@
 package com.itm.gestorfacturas.modules.pedido;
 
 import com.itm.gestorfacturas.modules.enums.EstadoPedido;
+import com.itm.gestorfacturas.modules.tipocafe.TipoCafe;
+import com.itm.gestorfacturas.modules.tipocafe.TipoCafeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -18,6 +21,12 @@ import java.util.UUID;
 public class PedidoController {
 
     private final IPedidoService pedidoService;
+    private final TipoCafeRepository tipoCafeRepository;
+
+    @ModelAttribute("tiposCafe")
+    public List<TipoCafe> cargarTipoCafe(){
+        return tipoCafeRepository.findAll();
+    }
 
     @GetMapping("/nuevo")
     @PreAuthorize("hasRole('ADMIN')")
@@ -30,13 +39,20 @@ public class PedidoController {
     @PreAuthorize("hasRole('ADMIN')")
     public String guardarPedido(@Valid @ModelAttribute("pedidoRequest") PedidoRequestDTO pedidoRequest,
                                 BindingResult bindingResult,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
         if (bindingResult.hasErrors()) {
             return "pedido/formulario";
         }
-        pedidoService.guardarPedido(pedidoRequest);
-        redirectAttributes.addFlashAttribute("mensaje", "Pedido registrado correctamente.");
-        return "redirect:/pedido";
+        try {
+            pedidoService.guardarPedido(pedidoRequest);
+            redirectAttributes.addFlashAttribute("mensaje", "Pedido registrado correctamente.");
+            return "redirect:/pedidos";
+        } catch (IllegalArgumentException erm) {
+            model.addAttribute("mensajeError", erm.getMessage());
+            return "pedido/formulario";
+        }
+        
     }
 
     /*
