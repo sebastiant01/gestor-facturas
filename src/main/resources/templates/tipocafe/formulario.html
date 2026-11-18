@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${idTipoCafe != null} ? 'Editar Tipo de Café - Gestor de Facturas' : 'Nuevo Tipo de Café - Gestor de Facturas'">
+        Tipo de Café - Gestor de Facturas
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: -0.75rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li>
+                <strong th:text="${idTipoCafe != null} ? 'Editar Tipo de Café' : 'Registrar Nuevo Tipo de Café'">
+                    Registrar Nuevo Tipo de Café
+                </strong>
+            </li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/tipos-cafe}" class="secondary">← Volver a Tipos de Café</a></li>
+        </ul>
+    </nav>
+
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <article>
+        <form th:action="${idTipoCafe != null} ? @{/tipos-cafe/{id}/editar(id=${idTipoCafe})} : @{/tipos-cafe/nuevo}"
+              th:object="${tipoCafeRequest}"
+              method="post">
+
+            <label for="nombreTipoCafe">Nombre del Tipo de Café</label>
+            <input type="text"
+                   id="nombreTipoCafe"
+                   th:field="*{nombreTipoCafe}"
+                   minlength="3"
+                   placeholder="Ej: Café Supremo Huila"
+                   required>
+            <small class="error-msg"
+                   th:if="${#fields.hasErrors('nombreTipoCafe')}"
+                   th:errors="*{nombreTipoCafe}"></small>
+
+            <label for="descripcionTipoCafe">Descripción (Opcional)</label>
+            <textarea id="descripcionTipoCafe"
+                      th:field="*{descripcionTipoCafe}"
+                      rows="3"
+                      placeholder="Notas de cata, perfil de tostión, malla o características de exportación..."></textarea>
+            <small class="error-msg"
+                   th:if="${#fields.hasErrors('descripcionTipoCafe')}"
+                   th:errors="*{descripcionTipoCafe}"></small>
+
+            <div class="grid">
+                <a th:href="@{/tipos-cafe}" role="button" class="secondary outline">Cancelar</a>
+                <button type="submit"
+                        th:text="${idTipoCafe != null} ? 'Guardar Cambios' : 'Registrar Tipo de Café'">
+                    Registrar Tipo de Café
+                </button>
+            </div>
+        </form>
+    </article>
+</main>
+</body>
+</html>

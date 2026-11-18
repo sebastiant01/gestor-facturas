@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tipos de Café - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Gestión de Tipos de Café</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/inicio}" class="secondary">Inicio</a></li>
+            <li><a th:href="@{/pedidos}" role="button" class="outline">Ver Pedidos</a></li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/tipos-cafe/nuevo}" role="button">+ Nuevo Tipo de Café</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <article th:if="${mensaje}" style="background-color: #14532d; color: white;" th:text="${mensaje}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Tabla de Tipos de Café -->
+    <figure>
+        <table>
+            <thead>
+            <tr>
+                <th>Nombre del Tipo de Café</th>
+                <th>Descripción</th>
+                <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(tiposCafe)}">
+                <td colspan="3" style="text-align: center;">No hay tipos de café registrados.</td>
+            </tr>
+            <tr th:each="tc : ${tiposCafe}">
+                <td>
+                    <strong th:text="${tc.nombreTipoCafe}">Café Excelso</strong>
+                </td>
+                <td th:text="${tc.descripcionTipoCafe != null and !tc.descripcionTipoCafe.isBlank() ? tc.descripcionTipoCafe : 'Sin descripción'}">
+                    Grano seleccionado de exportación
+                </td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <div class="actions-cell">
+                        <a th:href="@{/tipos-cafe/{id}/editar(id=${tc.idTipoCafe})}"
+                           role="button"
+                           class="outline secondary"
+                           style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">
+                            Editar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+</main>
+</body>
+</html>
