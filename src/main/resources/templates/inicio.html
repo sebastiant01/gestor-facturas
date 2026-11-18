@@ -14,13 +14,17 @@
         </ul>
         <ul>
             <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/usuarios}">Ver Usuarios OwO</a></li>
-            <!-- Solo visible si el usuario tiene ROLE_ADMIN en Neon -->
+                <a th:href="@{/usuarios}">Ver Usuarios OwO</a>
+            </li>
             <li sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/usuarios/nuevo}">Nuevo Usuario :3</a>
             </li>
             <li><a th:href="@{/pedidos}">Pedidos</a></li>
             <li><a th:href="@{/facturas}">Facturas</a></li>
+            <li><a th:href="@{/tipos-cafe}">Tipos de Café</a></li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/tipos-cafe/nuevo}">Nuevo Café</a>
+            </li>
             <li>
                 <!-- En Spring Security el logout SIEMPRE debe ser un form POST -->
                 <form th:action="@{/logout}" method="post" style="margin: 0;">
