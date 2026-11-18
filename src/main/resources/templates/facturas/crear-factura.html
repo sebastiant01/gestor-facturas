@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Factura - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: -0.75rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .resumen-grid p {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Generar Factura de Exportación</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/pedidos}" class="secondary">← Volver a Pedidos</a></li>
+            <li><a th:href="@{/facturas}" role="button" class="outline">Ver Facturas</a></li>
+        </ul>
+    </nav>
+
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Resumen del Pedido a Facturar -->
+    <article>
+        <header>
+            <strong>Resumen del Pedido Seleccionado</strong>
+        </header>
+        <div class="grid resumen-grid">
+            <div>
+                <p><strong>Cliente:</strong> <span th:text="${pedido.nombreCliente}">Exportadora Café</span></p>
+                <p><strong>Teléfono:</strong> <span th:text="${pedido.telefonoCliente}">+57 300 000 0000</span></p>
+                <p><strong>Fecha del Pedido:</strong> <span th:text="${pedido.fechaPedido}">2026-11-18</span></p>
+            </div>
+            <div>
+                <p><strong>País de Destino:</strong> <span th:text="${pedido.pais}">Estados Unidos</span></p>
+                <p><strong>Puerto / Entrega:</strong> <span th:text="${pedido.direccionEntrega}">Port of Miami</span></p>
+                <p>
+                    <strong>Producto:</strong>
+                    <span th:text="${pedido.tipoCafe != null ? pedido.tipoCafe.nombreTipoCafe : 'N/A'}">Café Excelso</span>
+                    (<span th:text="${#numbers.formatDecimal(pedido.pesokg, 1, 2) + ' kg'}">250.00 kg</span>)
+                </p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Formulario de Creación de Factura -->
+    <article>
+        <header>
+            <strong>Datos de Emisión</strong>
+        </header>
+        <form th:action="@{/facturas/guardar}" th:object="${facturaRequestDTO}" method="post">
+
+            <input type="hidden" th:field="*{idPedido}">
+            <small class="error-msg" th:if="${#fields.hasErrors('idPedido')}" th:errors="*{idPedido}"></small>
+
+            <div class="grid">
+                <div>
+                    <label for="proveedor">Proveedor Exportador</label>
+                    <input type="text" id="proveedor" th:field="*{proveedor}" readonly required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('proveedor')}" th:errors="*{proveedor}"></small>
+                </div>
+
+                <div>
+                    <label for="fecha">Fecha de Emisión</label>
+                    <input type="date" id="fecha" th:field="*{fecha}" required>
+                    <small class="error-msg" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></small>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="nombreEmpleado">Empleado Responsable</label>
+                    <input type="text" id="nombreEmpleado" th:field="*{nombreEmpleado}" readonly>
+                    <small class="error-msg" th:if="${#fields.hasErrors('nombreEmpleado')}" th:errors="*{nombreEmpleado}"></small>
+                </div>
+
+                <div>
+                    <label for="estadoFactura">Estado Inicial</label>
+                    <input type="text" id="estadoFactura" th:field="*{estadoFactura}" readonly>
+                    <small class="error-msg" th:if="${#fields.hasErrors('estadoFactura')}" th:errors="*{estadoFactura}"></small>
+                </div>
+            </div>
+
+            <div class="grid">
+                <a th:href="@{/pedidos}" role="button" class="secondary outline">Cancelar</a>
+                <button type="submit">Emitir y Registrar Factura</button>
+            </div>
+        </form>
+    </article>
+</main>
+</body>
+</html>

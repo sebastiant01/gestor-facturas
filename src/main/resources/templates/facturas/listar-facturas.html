@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Facturas - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-vigente {
+            background-color: #16a34a;
+            color: #fff;
+        }
+        .badge-anulada {
+            background-color: #dc2626;
+            color: #fff;
+        }
+        .search-form {
+            margin-bottom: 1.5rem;
+        }
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: end;
+        }
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav>
+        <ul>
+            <li><strong>Gestión de Facturas</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/inicio}" class="secondary">Inicio</a></li>
+            <li><a th:href="@{/pedidos}" role="button" class="outline">Ver Pedidos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <article th:if="${mensajeExito}" style="background-color: #14532d; color: white;" th:text="${mensajeExito}"></article>
+    <article th:if="${mensajeError}" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Barra de Búsqueda y Filtrado -->
+    <article class="search-form">
+        <form th:action="@{/facturas}" method="get">
+            <div class="grid">
+                <div>
+                    <label for="empleado">Buscar por Empleado</label>
+                    <input type="search"
+                           id="empleado"
+                           name="empleado"
+                           th:value="${empleadoBuscado}"
+                           placeholder="Nombre o usuario del empleado...">
+                </div>
+
+                <div>
+                    <label for="estado">Filtrar por Estado</label>
+                    <select id="estado" name="estado">
+                        <option value="">-- Todos los estados --</option>
+                        <option th:each="est : ${estados}"
+                                th:value="${est}"
+                                th:text="${est}"
+                                th:selected="${estadoSeleccionado != null and estadoSeleccionado == est}">
+                            VIGENTE
+                        </option>
+                    </select>
+                </div>
+
+                <div class="search-actions">
+                    <button type="submit" style="margin-bottom: 0;">Buscar</button>
+                    <a th:if="${(empleadoBuscado != null and !empleadoBuscado.isBlank()) or estadoSeleccionado != null}"
+                       th:href="@{/facturas}"
+                       role="button"
+                       class="secondary outline"
+                       style="margin-bottom: 0;">
+                        Limpiar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </article>
+
+    <!-- Tabla de Facturas (sin mostrar IDs) -->
+    <figure>
+        <table>
+            <thead>
+            <tr>
+                <th>Cliente / Destino</th>
+                <th>Proveedor</th>
+                <th>Café / Peso</th>
+                <th>Empleado Emisor</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(facturas)}">
+                <td colspan="7" style="text-align: center;">No se encontraron facturas con los criterios seleccionados.</td>
+            </tr>
+            <tr th:each="f : ${facturas}">
+                <td>
+                    <strong th:text="${f.pedido != null ? f.pedido.nombreCliente : 'Cliente N/A'}">Cliente</strong><br>
+                    <small th:text="${f.pedido != null ? f.pedido.pais : ''}">País</small>
+                </td>
+                <td th:text="${f.proveedor}">Café Premium S.A.</td>
+                <td>
+                    <span th:text="${f.pedido != null and f.pedido.tipoCafe != null ? f.pedido.tipoCafe.nombreTipoCafe : 'N/A'}">Café Excelso</span><br>
+                    <small th:if="${f.pedido != null}" th:text="${#numbers.formatDecimal(f.pedido.pesokg, 1, 2) + ' kg'}">100.00 kg</small>
+                </td>
+                <td th:text="${f.nombreEmpleado}">empleado@tcp.com</td>
+                <td th:text="${f.fecha}">2026-11-18</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${f.estadoFactura != null and f.estadoFactura.name() == 'ANULADA'} ? 'badge-anulada' : 'badge-vigente'"
+                          th:text="${f.estadoFactura}">
+                        VIGENTE
+                    </span>
+                </td>
+                <td>
+                    <div class="actions-cell">
+                        <a th:href="@{/facturas/{id}(id=${f.idFactura})}"
+                           role="button"
+                           class="outline secondary"
+                           style="padding: 0.3rem 0.6rem; font-size: 0.85rem;">
+                            Detalle
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+</main>
+</body>
+</html>

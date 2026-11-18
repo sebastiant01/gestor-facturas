@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Factura - Gestor de Facturas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-vigente {
+            background-color: #16a34a;
+            color: #fff;
+        }
+        .badge-anulada {
+            background-color: #dc2626;
+            color: #fff;
+        }
+        .detail-grid p {
+            margin-bottom: 0.6rem;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <nav class="no-print">
+        <ul>
+            <li><strong>Detalle de Factura de Exportación</strong></li>
+        </ul>
+        <ul>
+            <li><a th:href="@{/facturas}" class="secondary">← Volver a Facturas</a></li>
+            <li><button type="button" class="outline" onclick="window.print()">Imprimir / PDF</button></li>
+        </ul>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    <article th:if="${mensajeExito}" class="no-print" style="background-color: #1b4332; color: white;" th:text="${mensajeExito}"></article>
+    <article th:if="${mensajeError}" class="no-print" style="background-color: #7f1d1d; color: white;" th:text="${mensajeError}"></article>
+
+    <!-- Información Principal de la Factura (sin mostrar IDs) -->
+    <article>
+        <header class="header-flex">
+            <div>
+                <strong>Comprobante de Facturación</strong>
+            </div>
+            <div>
+                <span class="badge"
+                      th:classappend="${factura.estadoFactura != null and factura.estadoFactura.name() == 'ANULADA'} ? 'badge-anulada' : 'badge-vigente'"
+                      th:text="${factura.estadoFactura}">
+                    VIGENTE
+                </span>
+            </div>
+        </header>
+
+        <div class="grid detail-grid">
+            <div>
+                <p><strong>Proveedor Exportador:</strong> <span th:text="${factura.proveedor}">Café Premium S.A.</span></p>
+                <p><strong>Fecha de Emisión:</strong> <span th:text="${factura.fecha}">2026-11-18</span></p>
+            </div>
+            <div>
+                <p><strong>Empleado Responsable:</strong> <span th:text="${factura.nombreEmpleado}">empleado@tcp.com</span></p>
+                <p><strong>Estado:</strong> <span th:text="${factura.estadoFactura}">VIGENTE</span></p>
+            </div>
+        </div>
+    </article>
+
+    <!-- Datos del Pedido y Exportación Asociados -->
+    <article th:if="${factura.pedido != null}">
+        <header>
+            <strong>Datos del Cliente y Exportación</strong>
+        </header>
+
+        <div class="grid detail-grid">
+            <div>
+                <p><strong>Cliente:</strong> <span th:text="${factura.pedido.nombreCliente}">Exportadora Café</span></p>
+                <p><strong>Teléfono de Contacto:</strong> <span th:text="${factura.pedido.telefonoCliente}">+57 300 000 0000</span></p>
+                <p><strong>Fecha del Pedido:</strong> <span th:text="${factura.pedido.fechaPedido}">2026-11-18</span></p>
+            </div>
+            <div>
+                <p><strong>País de Destino:</strong> <span th:text="${factura.pedido.pais}">Estados Unidos</span></p>
+                <p><strong>Dirección / Puerto de Entrega:</strong> <span th:text="${factura.pedido.direccionEntrega}">Port of Miami</span></p>
+                <p>
+                    <strong>Producto:</strong>
+                    <span th:text="${factura.pedido.tipoCafe != null ? factura.pedido.tipoCafe.nombreTipoCafe : 'N/A'}">Café Excelso</span>
+                </p>
+                <p>
+                    <strong>Peso Neto:</strong>
+                    <span th:text="${#numbers.formatDecimal(factura.pedido.pesokg, 1, 2) + ' kg'}">250.00 kg</span>
+                </p>
+            </div>
+        </div>
+
+        <footer class="no-print">
+            <a th:href="@{/pedidos/{id}(id=${factura.pedido.idPedido})}"
+               role="button"
+               class="secondary outline">
+                Ver Pedido Original
+            </a>
+        </footer>
+    </article>
+</main>
+</body>
+</html>
